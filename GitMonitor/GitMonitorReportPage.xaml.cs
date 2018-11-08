@@ -1,6 +1,9 @@
-﻿using System;
+﻿using RestSharp;
+using RestSharp.Authenticators;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,16 +23,40 @@ namespace GitMonitor
     /// </summary>
     public partial class GitMonitorReportPage : Page
     {
+        private static readonly HttpClient client = new HttpClient();
+
         public GitMonitorReportPage()
         {
             InitializeComponent();
         }
 
-        // Custom constructor to pass expense report data
-        public GitMonitorReportPage(object data) : this()
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-            // Bind to expense report data.
-            this.DataContext = data;
+
+            var userName = "barabali";
+            var userPassword = "bal2int1";
+
+            var client = new RestClient("https://api.github.com/");
+            client.Authenticator = new HttpBasicAuthenticator(userName, userPassword);
+            var request = new RestRequest("/user", Method.GET);
+
+            // execute the request
+            IRestResponse response = client.Execute(request);
+            var content = response.Content; // raw content as string
+            Console.WriteLine(content);
+            textbox.Text = content;
+
+            var request2 = new RestRequest("/users/barabali/repos?page=1", Method.GET);
+
+            // execute the request
+            IRestResponse response2 = client.Execute(request2);
+            var content2 = response2.Content; // raw content as string
+            Console.WriteLine(content2);
+
+            // View Expense Report
+            // NavigationWindow window = new NavigationWindow();
+            // window.Source = new Uri("GitMonitorReportPage.xaml", UriKind.Relative);
+            //window.Show();
         }
     }
 }

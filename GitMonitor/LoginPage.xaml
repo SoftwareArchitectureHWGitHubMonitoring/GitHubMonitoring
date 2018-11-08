@@ -1,0 +1,57 @@
+﻿<Page x:Class="GitMonitor.LoginPage"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" Height="500" Width="800" ShowsNavigationUI="False"> 
+
+        <Grid>
+            <!-- Blue background image -->
+            <Grid.Background>
+                <ImageBrush TileMode="Tile" ViewportUnits="Absolute" Viewport="0 0 500 500" />
+            </Grid.Background>
+
+            <!-- Main content scroll -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                <StackPanel 
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    TextBlock.TextAlignment="Center">
+
+                    <!-- Login main content white box -->
+                    <Border 
+                            CornerRadius="10"
+                            Padding="15 50 15 15"
+                            Width="330"
+                            Margin="50 50 50 0">
+
+                        <StackPanel>
+
+                            <!-- Sign Up header -->
+                            <TextBlock Text="Sign Up" 
+                                    />
+
+                            <!-- Sign up subtext-->
+                            <TextBlock Text="It's about to get fun" 
+                                       Margin="0 0 0 20"
+                                       />
+
+                            <!-- Email -->
+                            <TextBox Tag="Email" />
+
+                            <!-- Password -->
+                            <TextBox Tag="Password" Margin="0 0 0 30" />
+
+                            <!-- Next button -->
+                            <Button Content="Next" HorizontalAlignment="Center" />
+
+                        </StackPanel>
+
+                    </Border>
+
+                    <Button Content="I already have an account" HorizontalAlignment="Center" />
+
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+</Page>
