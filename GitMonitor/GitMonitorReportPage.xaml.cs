@@ -23,8 +23,6 @@ namespace GitMonitor
     /// </summary>
     public partial class GitMonitorReportPage : Page
     {
-        private static readonly HttpClient client = new HttpClient();
-
         public GitMonitorReportPage()
         {
             InitializeComponent();
@@ -34,7 +32,7 @@ namespace GitMonitor
         {
 
             var userName = "barabali";
-            var userPassword = "bal2int1";
+            var userPassword = "asd";
 
             var client = new RestClient("https://api.github.com/");
             client.Authenticator = new HttpBasicAuthenticator(userName, userPassword);

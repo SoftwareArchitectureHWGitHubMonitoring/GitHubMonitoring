@@ -1,6 +1,9 @@
-﻿using System;
+﻿using RestSharp;
+using RestSharp.Authenticators;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,9 +23,43 @@ namespace GitMonitor
     /// </summary>
     public partial class LoginPage : Page
     {
+
+        RestClient client = new RestClient("https://api.github.com/");
+
+        //TODO find better solution
+        public static String userName="";
+        public static String userPassword="";
+
         public LoginPage()
         {
             InitializeComponent();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+            var userNameTry = emailField.Text;
+            var userPasswordTry = passwordField.Password;
+
+            var client = new RestClient("https://api.github.com/");
+            client.Authenticator = new HttpBasicAuthenticator(userNameTry, userPasswordTry);
+            var request = new RestRequest("", Method.GET);
+
+            // execute the request
+            IRestResponse response = client.Execute(request);
+            var content = response.Content; // raw content as string
+            Console.WriteLine(content);
+            if (response.StatusCode.Equals(System.Net.HttpStatusCode.OK))
+            {
+                resultLabel.Text = "Sikeres bejelentkezés!";
+                userName = userNameTry;
+                userPassword = userPasswordTry;
+            }
+            else
+            {
+                resultLabel.Text = "Sikertelen bejelentkezés!";
+            }
+            
         }
     }
 }

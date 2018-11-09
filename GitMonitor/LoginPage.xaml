@@ -25,32 +25,28 @@
                             Width="330"
                             Margin="50 50 50 0">
 
-                        <StackPanel>
+                    <StackPanel>
 
-                            <!-- Sign Up header -->
-                            <TextBlock Text="Sign Up" 
-                                    />
-
-                            <!-- Sign up subtext-->
+                        <!-- Sign up subtext-->
                             <TextBlock Text="It's about to get fun" 
-                                       Margin="0 0 0 20"
+                                       Margin="0 5 0 20"
                                        />
 
                             <!-- Email -->
-                            <TextBox Tag="Email" />
+                            <TextBox x:Name="emailField" Tag="Email" />
 
                             <!-- Password -->
-                            <TextBox Tag="Password" Margin="0 0 0 30" />
+                        <PasswordBox x:Name="passwordField" Tag="Password" Margin="0 5 0 30"/>
 
-                            <!-- Next button -->
-                            <Button Content="Next" HorizontalAlignment="Center" />
+                        <!-- Next button -->
+                        <Button Click="Button_Click" Content="Login" HorizontalAlignment="Center" />
 
+                        <TextBlock x:Name="resultLabel" 
+                                       Margin="0 10 0 10"
+                                       />                        
                         </StackPanel>
 
                     </Border>
-
-                    <Button Content="I already have an account" HorizontalAlignment="Center" />
-
                 </StackPanel>
             </ScrollViewer>
         </Grid>

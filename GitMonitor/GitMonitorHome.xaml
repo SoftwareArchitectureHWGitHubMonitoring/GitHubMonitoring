@@ -42,7 +42,7 @@
             <materialDesign:PackIcon Kind="Menu" Foreground="#FF313131"/>
         </Button>
 
-        <Frame x:Name="myFrame" Source="GitMonitorReportPage.xaml" NavigationUIVisibility="Hidden"/>
+        <Frame x:Name="myFrame" Source="LoginPage.xaml" NavigationUIVisibility="Hidden"/>
 
         <Grid x:Name="GridMenu" Width="250" HorizontalAlignment="Left" Margin="-250 0 0 0" Background="White" RenderTransformOrigin="0.5,0.5">
             <Grid.RenderTransform>
@@ -56,16 +56,16 @@
             <StackPanel>
                 <Image Height="140" Source="Assets/octocat.png" Stretch="Uniform"/>
                 <ListView Foreground="#FF313131" FontFamily="Champagne &amp; Limousines" FontSize="18">
-                    <ListViewItem Height="45" Padding="0" PreviewMouseLeftButtonUp="ListViewItem_PreviewMouseLeftButtonUp">
+                    <ListViewItem x:Name="loginNavigation" Height="45" Padding="0" PreviewMouseLeftButtonUp="ListViewItem_PreviewMouseLeftButtonUp">
                         <StackPanel Orientation="Horizontal" Margin="10 0">
                             <materialDesign:PackIcon Kind="Login" Width="20" Height="20" Foreground="Gray" Margin="5" VerticalAlignment="Center"/>
                             <TextBlock Text="Login" Margin="10"/>
                         </StackPanel>
                     </ListViewItem>
-                    <ListViewItem Height="45" Padding="0">
+                    <ListViewItem x:Name="organizationsNavigation" Height="45" Padding="0" PreviewMouseLeftButtonUp="ListViewItem_PreviewMouseLeftButtonUp">
                         <StackPanel Orientation="Horizontal" Margin="10 0">
-                            <materialDesign:PackIcon Kind="HelpCircleOutline" Width="20" Height="20" Foreground="#FFF08033" Margin="5" VerticalAlignment="Center"/>
-                            <TextBlock Text="Help" Margin="10"/>
+                            <materialDesign:PackIcon Kind="BulletinBoard" Width="20" Height="20" Foreground="#FFF08033" Margin="5" VerticalAlignment="Center"/>
+                            <TextBlock Text="Organizations" Margin="10"/>
                         </StackPanel>
                     </ListViewItem>
                     <ListViewItem Height="45" Padding="0">

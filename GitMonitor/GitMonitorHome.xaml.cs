@@ -22,15 +22,22 @@ namespace GitMonitor
 
         private void ListViewItem_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            Console.WriteLine("Navigating to Login");
             var item = sender as ListViewItem;
-            Console.WriteLine(sender);
             if (item != null && item.IsSelected)
             {
-                Console.WriteLine("Doing stuff");
-                //Do your stuff
-                LoginPage next = new LoginPage();
-                myFrame.Navigate(next);
+                Page next;
+                switch (item.Name)
+                {
+                    case "loginNavigation":
+                        next = new LoginPage();
+                        myFrame.Navigate(next);
+                        break;
+                    case "organizationsNavigation":
+                        next = new OrganizationsPage();
+                        myFrame.Navigate(next);
+                        break;
+                }
+
             }
         }
 
