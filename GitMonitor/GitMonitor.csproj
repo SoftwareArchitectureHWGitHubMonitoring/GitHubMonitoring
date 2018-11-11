@@ -83,7 +83,8 @@
     <Compile Include="GitMonitorHome.xaml.cs">
       <DependentUpon>GitMonitorHome.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Objects\CredentialStorage.cs" />
+	<Compile Include="Objects\User.cs" />
+	<Compile Include="Objects\CredentialStorage.cs" />
     <Compile Include="Objects\TokenClaimer.cs" />
     <Compile Include="Pages\GitMonitorReportPage.xaml.cs">
       <DependentUpon>GitMonitorReportPage.xaml</DependentUpon>

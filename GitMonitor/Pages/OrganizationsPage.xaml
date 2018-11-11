@@ -26,11 +26,20 @@
                     <StackPanel>
                         <Button Click="Button_Click" Content="Show Organizations" HorizontalAlignment="Center" />
 
-                        <DataGrid Name="organizationsGrid" AutoGenerateColumns="False" Width="500">
+                        <DataGrid Name="organizationsGrid" AutoGenerateColumns="False" Width="500" Margin="0 10 0 0" IsReadOnly="True">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="ID" Binding="{Binding ID}" />
                                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
                                 <DataGridTextColumn Header="Description" Binding="{Binding Description}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <Button Click="Button_Click2" Content="Show Users" HorizontalAlignment="Center" Margin="0 10 0 0" />
+
+                        <DataGrid Name="usersGrid" AutoGenerateColumns="False" Width="500" Margin="0 10 0 0" IsReadOnly="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding ID}" />
+                                <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
                             </DataGrid.Columns>
                         </DataGrid>
 
