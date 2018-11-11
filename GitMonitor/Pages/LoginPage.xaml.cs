@@ -1,4 +1,5 @@
-﻿using RestSharp;
+﻿using GitMonitor.Objects;
+using RestSharp;
 using RestSharp.Authenticators;
 using System;
 using System.Collections.Generic;
@@ -24,11 +25,9 @@ namespace GitMonitor
     public partial class LoginPage : Page
     {
 
-        RestClient client = new RestClient("https://api.github.com/");
-
         //TODO find better solution
-        public static String userName="barabali";
-        public static String userPassword="asdf";
+        public static String userName = "barabali";
+        public static String userPassword = "asdf";
 
         public LoginPage()
         {
@@ -41,25 +40,15 @@ namespace GitMonitor
             var userNameTry = emailField.Text;
             var userPasswordTry = passwordField.Password;
 
-            var client = new RestClient("https://api.github.com/");
-            client.Authenticator = new HttpBasicAuthenticator(userNameTry, userPasswordTry);
-            var request = new RestRequest("", Method.GET);
+            string token = TokenClaimer.Instance.claimToken(userNameTry, userPasswordTry);
 
-            // execute the request
-            IRestResponse response = client.Execute(request);
-            var content = response.Content; // raw content as string
-            Console.WriteLine(content);
-            if (response.StatusCode.Equals(System.Net.HttpStatusCode.OK))
-            {
-                resultLabel.Text = "Sikeres bejelentkezés!";
-                userName = userNameTry;
-                userPassword = userPasswordTry;
-            }
-            else
-            {
-                resultLabel.Text = "Sikertelen bejelentkezés!";
-            }
-            
+            Console.WriteLine(token);
+
+            userName = userNameTry;
+            userPassword = token;
+
+            CredentialStorage.addItem(userNameTry, token);
+
         }
     }
 }
