@@ -3,6 +3,7 @@ using RestSharp;
 using RestSharp.Authenticators;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -26,29 +27,72 @@ namespace GitMonitor
     {
 
         //TODO find better solution
-        public static String userName = "barabali";
+        public static String userName = "";
         public static String userPassword = "asdf";
+        public static Boolean loggedIn = false;
+
+        private System.Windows.Controls.Button newBtn = new Button();
 
         public LoginPage()
         {
             InitializeComponent();
+
+            if (loggedIn)
+            {
+                resultLabel.Text = "Sikeres bejelentkezés!";
+
+                
+                newBtn.Content = "Logout";
+                newBtn.Name = "LogoutButton";
+                newBtn.Width = 50;
+                newBtn.Click += NewBtn_Click;
+                LoginPanel.Children.Add(newBtn);
+            }
+        }
+
+        private void NewBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (loggedIn)
+            {
+                loggedIn = false;
+
+                if (File.Exists("Token.txt"))
+                {
+                    File.Delete("Token.txt");
+                }
+
+                // TODO Login Button Remove
+                LoginPanel.Children.Remove((UIElement)this.FindName("LogoutButton"));
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            if (!loggedIn)
+            {
+                var userNameTry = emailField.Text;
+                var userPasswordTry = passwordField.Password;
 
-            var userNameTry = emailField.Text;
-            var userPasswordTry = passwordField.Password;
+                string token = TokenClaimer.Instance.claimToken(userNameTry, userPasswordTry);
 
-            string token = TokenClaimer.Instance.claimToken(userNameTry, userPasswordTry);
+                Console.WriteLine(token);
 
-            Console.WriteLine(token);
+                userName = userNameTry;
+                userPassword = token;
 
-            userName = userNameTry;
-            userPassword = token;
+                if (!userName.Equals("") || token != null)
+                {
+                    CredentialStorage.addItem(userNameTry, token);
 
-            CredentialStorage.addItem(userNameTry, token);
+                    File.WriteAllText("Token.txt", userName + ":" + userPassword);
 
+                    resultLabel.Text = "Sikeres bejelentkezés!";
+
+                    LoginPanel.Children.Add(newBtn);
+                }
+
+                loggedIn = true;
+            }
         }
     }
 }

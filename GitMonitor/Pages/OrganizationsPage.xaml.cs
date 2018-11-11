@@ -41,7 +41,7 @@ namespace GitMonitor
         {
             client.Authenticator = new HttpBasicAuthenticator(LoginPage.userName, LoginPage.userPassword);
 
-            var request = new RestRequest("user/orgs", Method.GET);
+            var request = new RestRequest("/user/orgs", Method.GET);
 
             // execute the request
             IRestResponse response = client.Execute(request);
