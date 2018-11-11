@@ -27,18 +27,43 @@ namespace GitMonitor
     {
 
         //TODO find better solution
-        public static String userName = "barabali";
+        public static String userName = "";
         public static String userPassword = "asdf";
         public static Boolean loggedIn = false;
 
-        public static int counter = 0;
+        private System.Windows.Controls.Button newBtn = new Button();
 
         public LoginPage()
         {
             InitializeComponent();
 
             if (loggedIn)
+            {
                 resultLabel.Text = "Sikeres bejelentkezés!";
+
+                
+                newBtn.Content = "Logout";
+                newBtn.Name = "LogoutButton";
+                newBtn.Width = 50;
+                newBtn.Click += NewBtn_Click;
+                LoginPanel.Children.Add(newBtn);
+            }
+        }
+
+        private void NewBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (loggedIn)
+            {
+                loggedIn = false;
+
+                if (File.Exists("Token.txt"))
+                {
+                    File.Delete("Token.txt");
+                }
+
+                // TODO Login Button Remove
+                LoginPanel.Children.Remove((UIElement)this.FindName("LogoutButton"));
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -55,13 +80,15 @@ namespace GitMonitor
                 userName = userNameTry;
                 userPassword = token;
 
-                if (!userName.Equals("") || !token.Equals(""))
+                if (!userName.Equals("") || token != null)
                 {
                     CredentialStorage.addItem(userNameTry, token);
 
                     File.WriteAllText("Token.txt", userName + ":" + userPassword);
 
                     resultLabel.Text = "Sikeres bejelentkezés!";
+
+                    LoginPanel.Children.Add(newBtn);
                 }
 
                 loggedIn = true;

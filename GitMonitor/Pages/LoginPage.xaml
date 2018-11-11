@@ -25,7 +25,7 @@
                             Width="330"
                             Margin="50 50 50 0">
 
-                    <StackPanel>
+                    <StackPanel Name="LoginPanel">
 
                         <!-- Sign up subtext-->
                             <TextBlock Text="It's about to get fun" 
