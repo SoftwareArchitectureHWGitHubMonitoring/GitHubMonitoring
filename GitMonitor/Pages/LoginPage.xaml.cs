@@ -3,6 +3,7 @@ using RestSharp;
 using RestSharp.Authenticators;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -28,27 +29,43 @@ namespace GitMonitor
         //TODO find better solution
         public static String userName = "barabali";
         public static String userPassword = "asdf";
+        public static Boolean loggedIn = false;
+
+        public static int counter = 0;
 
         public LoginPage()
         {
             InitializeComponent();
+
+            if (loggedIn)
+                resultLabel.Text = "Sikeres bejelentkezés!";
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            if (!loggedIn)
+            {
+                var userNameTry = emailField.Text;
+                var userPasswordTry = passwordField.Password;
 
-            var userNameTry = emailField.Text;
-            var userPasswordTry = passwordField.Password;
+                string token = TokenClaimer.Instance.claimToken(userNameTry, userPasswordTry);
 
-            string token = TokenClaimer.Instance.claimToken(userNameTry, userPasswordTry);
+                Console.WriteLine(token);
 
-            Console.WriteLine(token);
+                userName = userNameTry;
+                userPassword = token;
 
-            userName = userNameTry;
-            userPassword = token;
+                if (!userName.Equals("") || !token.Equals(""))
+                {
+                    CredentialStorage.addItem(userNameTry, token);
 
-            CredentialStorage.addItem(userNameTry, token);
+                    File.WriteAllText("Token.txt", userName + ":" + userPassword);
 
+                    resultLabel.Text = "Sikeres bejelentkezés!";
+                }
+
+                loggedIn = true;
+            }
         }
     }
 }
