@@ -20,11 +20,19 @@
                 <Border 
                             CornerRadius="10"
                             Padding="15 50 15 15"
-                            Width="500"
+                            Width="700"
                             Margin="50 50 50 0">
 
                     <StackPanel>
                         <Button Click="Button_Click" Content="Show Organizations" HorizontalAlignment="Center" />
+
+                        <DataGrid Name="organizationsGrid" AutoGenerateColumns="False" Width="500">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding ID}" />
+                                <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
+                                <DataGridTextColumn Header="Description" Binding="{Binding Description}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
 
                         <ScrollViewer Margin="10,10,10,0" Height="200" VerticalScrollBarVisibility="Auto"  >
                             <TextBlock TextWrapping="Wrap" Width="Auto" Name ="textbox"></TextBlock>

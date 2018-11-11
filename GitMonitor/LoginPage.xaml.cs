@@ -27,8 +27,8 @@ namespace GitMonitor
         RestClient client = new RestClient("https://api.github.com/");
 
         //TODO find better solution
-        public static String userName="";
-        public static String userPassword="";
+        public static String userName="barabali";
+        public static String userPassword="asdf";
 
         public LoginPage()
         {

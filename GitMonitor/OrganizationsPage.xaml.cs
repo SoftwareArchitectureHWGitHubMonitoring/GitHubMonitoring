@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using GitMonitor.Objects;
+using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Authenticators;
 using System;
@@ -38,11 +39,30 @@ namespace GitMonitor
             var content = response.Content; // raw content as string
 
             dynamic magic = JsonConvert.DeserializeObject(content);
-            Newtonsoft.Json.Linq.JArray result = (Newtonsoft.Json.Linq.JArray) JsonConvert.DeserializeObject(content);
-            for(int i=0;i<result.Count;i++)
+            Newtonsoft.Json.Linq.JArray result = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(content);
+
+            List<Organization> list = new List<Organization>();
+
+            for (int i = 0; i < result.Count; i++)
             {
-               textbox.Text+=(magic[i].login)+"\n";
+                Organization o = new Organization(magic[i].id, magic[i].login, magic[i].description);
+                list.Add(o);
+                textbox.Text += (magic[i].login) + "\n";
+
+                var requestDetails = new RestRequest("orgs/" + magic[i].login + "/members", Method.GET);
+
+                IRestResponse responseDetails = client.Execute(requestDetails);
+                var contentDetails = responseDetails.Content; 
+                dynamic magicDetails = JsonConvert.DeserializeObject(contentDetails);
+                Newtonsoft.Json.Linq.JArray resultDetails = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(contentDetails);
+                for(int j = 0; j < resultDetails.Count; j++)
+                {
+                    textbox.Text += ("\t"+magicDetails[j].login) + "\n";
+                }
+
             }
+            organizationsGrid.ItemsSource = list;
+         
         }
 
     }
