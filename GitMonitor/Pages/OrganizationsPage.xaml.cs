@@ -19,7 +19,7 @@ using System.Windows.Shapes;
 namespace GitMonitor
 {
     /// <summary>
-    /// Interaction logic for OrganizationsWindow.xaml
+    /// Interaction logic for OrganizationsPage.xaml
     /// </summary>
     public partial class OrganizationsPage : Page
     {
@@ -28,10 +28,12 @@ namespace GitMonitor
             InitializeComponent();
         }
 
+        RestClient client = new RestClient("https://api.github.com/");
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var client = new RestClient("https://api.github.com/");
             client.Authenticator = new HttpBasicAuthenticator(LoginPage.userName, LoginPage.userPassword);
+
             var request = new RestRequest("user/orgs", Method.GET);
 
             // execute the request
@@ -47,23 +49,32 @@ namespace GitMonitor
             {
                 Organization o = new Organization(magic[i].id, magic[i].login, magic[i].description);
                 list.Add(o);
-                textbox.Text += (magic[i].login) + "\n";
-
-                var requestDetails = new RestRequest("orgs/" + magic[i].login + "/members", Method.GET);
-
-                IRestResponse responseDetails = client.Execute(requestDetails);
-                var contentDetails = responseDetails.Content; 
-                dynamic magicDetails = JsonConvert.DeserializeObject(contentDetails);
-                Newtonsoft.Json.Linq.JArray resultDetails = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(contentDetails);
-                for(int j = 0; j < resultDetails.Count; j++)
-                {
-                    textbox.Text += ("\t"+magicDetails[j].login) + "\n";
-                }
-
             }
             organizationsGrid.ItemsSource = list;
-         
+
         }
 
+        private void Button_Click2(object sender, RoutedEventArgs e)
+        {
+            var requestDetails = new RestRequest("orgs/" + ((Organization)organizationsGrid.SelectedItem).Name + "/members", Method.GET);
+            IRestResponse responseDetails = client.Execute(requestDetails);
+
+            var contentDetails = responseDetails.Content;
+            dynamic magicDetails = JsonConvert.DeserializeObject(contentDetails);
+
+            Newtonsoft.Json.Linq.JArray resultDetails = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(contentDetails);
+            for (int j = 0; j < resultDetails.Count; j++)
+            {
+                textbox.Text += ("\t" + magicDetails[j].login) + "\n";
+                List<User> list = new List<User>();
+
+                for (int i = 0; i < resultDetails.Count; i++)
+                {
+                    User o = new User(magicDetails[i].id, magicDetails[i].login);
+                    list.Add(o);
+                }
+                usersGrid.ItemsSource = list;
+            }
+        }
     }
 }
