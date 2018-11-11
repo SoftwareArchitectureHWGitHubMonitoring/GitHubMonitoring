@@ -72,7 +72,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GitMonitorReportPage.xaml">
+    <Page Include="Pages\GitMonitorReportPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -83,24 +83,24 @@
     <Compile Include="GitMonitorHome.xaml.cs">
       <DependentUpon>GitMonitorHome.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GitMonitorReportPage.xaml.cs">
+    <Compile Include="Pages\GitMonitorReportPage.xaml.cs">
       <DependentUpon>GitMonitorReportPage.xaml</DependentUpon>
     </Compile>
-    <Page Include="LoginPage.xaml">
+    <Page Include="Pages\LoginPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="OrganizationsPage.xaml">
+    <Page Include="Pages\OrganizationsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LoginPage.xaml.cs">
+    <Compile Include="Pages\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Objects\Organization.cs" />
-    <Compile Include="OrganizationsPage.xaml.cs">
+    <Compile Include="Pages\OrganizationsPage.xaml.cs">
       <DependentUpon>OrganizationsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
