@@ -26,6 +26,13 @@ namespace GitMonitor
         public OrganizationsPage()
         {
             InitializeComponent();
+            
+            //Add roles for members
+            List<MyComboBoxItem> roles = new List<MyComboBoxItem>();
+            roles.Add(new MyComboBoxItem("member"));
+            roles.Add(new MyComboBoxItem("admin"));
+            userRole.ItemsSource = roles;
+            userRole.SelectedIndex = 0;
         }
 
         RestClient client = new RestClient("https://api.github.com/");
@@ -44,18 +51,25 @@ namespace GitMonitor
             Newtonsoft.Json.Linq.JArray result = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(content);
 
             List<Organization> list = new List<Organization>();
+            List<MyComboBoxItem> orgList = new List<MyComboBoxItem>();
 
             for (int i = 0; i < result.Count; i++)
             {
                 Organization o = new Organization(magic[i].id, magic[i].login, magic[i].description);
                 list.Add(o);
+                orgList.Add(new MyComboBoxItem((String)magic[i].login));
             }
             organizationsGrid.ItemsSource = list;
-
+            selectOrganization.ItemsSource = orgList;
+            selectOrganization.SelectedIndex = 0;
         }
 
         private void Button_Click2(object sender, RoutedEventArgs e)
         {
+            if (organizationsGrid.SelectedItem == null)
+            {
+                return;
+            }
             var requestDetails = new RestRequest("orgs/" + ((Organization)organizationsGrid.SelectedItem).Name + "/members", Method.GET);
             IRestResponse responseDetails = client.Execute(requestDetails);
 
@@ -74,6 +88,40 @@ namespace GitMonitor
                     list.Add(o);
                 }
                 usersGrid.ItemsSource = list;
+            }
+            
+        }
+
+        private void Button_Add_Member(object sender, RoutedEventArgs e)
+        {
+            if (selectOrganization.SelectedItem == null || usernameField.Text.Length == 0)
+            {
+                return;
+            }
+            var requestDetails = new RestRequest("orgs/" + ((MyComboBoxItem)selectOrganization.SelectedItem).Name + "/memberships/" + usernameField.Text, Method.PUT);
+            requestDetails.AddJsonBody(new { role = "admin" });
+            IRestResponse responseDetails = client.Execute(requestDetails);
+            var contentDetails = responseDetails.Content;
+            dynamic magic = JsonConvert.DeserializeObject(contentDetails);
+            var state = magic.state;
+            Console.WriteLine(responseDetails.StatusCode + ";" + state);
+        }
+
+        private void Button_Delete_Member(object sender, RoutedEventArgs e)
+        {
+            if (selectOrganization.SelectedItem == null || usernameField.Text.Length == 0)
+            {
+                return;
+            }
+            var requestDetails = new RestRequest("orgs/" + ((MyComboBoxItem)selectOrganization.SelectedItem).Name + "/memberships/" + usernameField.Text, Method.DELETE);
+            IRestResponse responseDetails = client.Execute(requestDetails);
+            if(responseDetails.Equals(System.Net.HttpStatusCode.NotFound))
+            {
+                //TODO error message
+            }
+            else
+            {
+                //ok
             }
         }
     }
