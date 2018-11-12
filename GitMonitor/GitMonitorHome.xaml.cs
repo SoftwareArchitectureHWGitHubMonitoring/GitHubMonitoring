@@ -19,6 +19,8 @@ namespace GitMonitor
         public GitMonitorHome()
         {
             InitializeComponent();
+            CosineSimilarityCalculator c = new CosineSimilarityCalculator();
+            c.CalculateCosineSimilarity("aa bb cc","aa bb dd");
             ReadCredentials();
             CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-US");
         }

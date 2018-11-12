@@ -62,7 +62,7 @@ namespace GitMonitor
                 }
 
                 // TODO Login Button Remove
-                LoginPanel.Children.Remove((UIElement)this.FindName("LogoutButton"));
+                //LoginPanel.Children.Remove((UIElement)this.FindName("LogoutButton"));
             }
         }
 
