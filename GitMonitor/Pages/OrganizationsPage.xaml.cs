@@ -26,6 +26,7 @@ namespace GitMonitor
         public OrganizationsPage()
         {
             InitializeComponent();
+            client.Authenticator = new HttpBasicAuthenticator(LoginPage.userName, LoginPage.userPassword);
 
             //Add roles for members
             List<MyComboBoxItem> roles = new List<MyComboBoxItem>
@@ -39,10 +40,13 @@ namespace GitMonitor
 
         RestClient client = new RestClient("https://api.github.com/");
 
+        /// <summary>
+        /// Gets the list of Organizations
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            client.Authenticator = new HttpBasicAuthenticator(LoginPage.userName, LoginPage.userPassword);
-
             var request = new RestRequest("/user/orgs", Method.GET);
 
             // execute the request
@@ -66,13 +70,18 @@ namespace GitMonitor
             selectOrganization.SelectedIndex = 0;
         }
 
-        private void Button_Click2(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Gets list of users for selected organization
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Button_Show_Users(object sender, RoutedEventArgs e)
         {
-            if (organizationsGrid.SelectedItem == null)
+            if (selectOrganization.SelectedItem == null)
             {
                 return;
             }
-            var requestDetails = new RestRequest("orgs/" + ((Organization)organizationsGrid.SelectedItem).Name + "/members", Method.GET);
+            var requestDetails = new RestRequest("orgs/" + ((MyComboBoxItem)selectOrganization.SelectedItem).Name + "/members", Method.GET);
             IRestResponse responseDetails = client.Execute(requestDetails);
 
             var contentDetails = responseDetails.Content;
@@ -81,7 +90,6 @@ namespace GitMonitor
             Newtonsoft.Json.Linq.JArray resultDetails = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(contentDetails);
             for (int j = 0; j < resultDetails.Count; j++)
             {
-                textbox.Text += ("\t" + magicDetails[j].login) + "\n";
                 List<User> list = new List<User>();
 
                 for (int i = 0; i < resultDetails.Count; i++)
@@ -94,6 +102,11 @@ namespace GitMonitor
             
         }
 
+        /// <summary>
+        /// Invites a user to the organization
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button_Add_Member(object sender, RoutedEventArgs e)
         {
             if (selectOrganization.SelectedItem == null || usernameField.Text.Length == 0)
@@ -109,6 +122,11 @@ namespace GitMonitor
             Console.WriteLine(responseDetails);
         }
 
+        /// <summary>
+        /// Deletes or revokes invitations from an organization member
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button_Delete_Member(object sender, RoutedEventArgs e)
         {
             if (selectOrganization.SelectedItem == null || usernameField.Text.Length == 0)
@@ -119,17 +137,20 @@ namespace GitMonitor
             IRestResponse responseDetails = client.Execute(requestDetails);
             if(responseDetails.StatusCode.Equals(System.Net.HttpStatusCode.NotFound))
             {
-                //TODO error message
                 MessageBox.Show("Not found user like that", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
                 //ok
-                //TODO error message
                 MessageBox.Show("Successfully deleted", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
+        /// <summary>
+        /// Shows repositiories in the organization
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button_Show_Repos(object sender, RoutedEventArgs e)
         {
             if (selectOrganization.SelectedItem == null)
@@ -146,20 +167,83 @@ namespace GitMonitor
             if (responseDetails.StatusCode.Equals(System.Net.HttpStatusCode.OK))
             {
                 Newtonsoft.Json.Linq.JArray resultDetails = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(contentDetails);
-                List<Organization> list = new List<Organization>();
+                List<Repository> list = new List<Repository>();
                 for (int j = 0; j < resultDetails.Count; j++)
                 {
-                    Organization o = new Organization(magic[j].id,magic[j].name,magic[j].owner.login);
+                    Repository o = new Repository(magic[j].id,magic[j].name,magic[j].owner.login);
+                    Console.WriteLine(magic[j].name);
                     list.Add(o);
                 }
                 reposGrid.ItemsSource = list;
             }
             else
             {
-                //ok
-                //TODO error message
-                MessageBox.Show("Failed to get or empty", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Failed to get or no repos", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
             }
+        }
+
+        /// <summary>
+        /// Creates a repository, owner is the organization
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Button_Create_Repos(object sender, RoutedEventArgs e)
+        {
+            if (selectOrganization.SelectedItem == null || reponameField.Text.Length==0)
+            {
+                return;
+            }
+            var request = new RestRequest("/orgs/" + ((MyComboBoxItem)selectOrganization.SelectedItem).Name + "/repos", Method.POST);
+            request.AddJsonBody(new {name= reponameField.Text});
+            IRestResponse response = client.Execute(request);
+            var content = response.Content;
+
+            if (response.IsSuccessful)
+            {
+                Console.WriteLine(content);
+                Delayed_repo_show();
+            }
+            else
+            {
+                MessageBox.Show("Failed to get or no repos", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        /// <summary>
+        /// Deletes a repo belonging to the organization
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Button_Delete_Repo(object sender, RoutedEventArgs e)
+        {
+            if (reposGrid.SelectedItem == null)
+            {
+                return;
+            }
+
+            var request = new RestRequest("/repos/" + ((MyComboBoxItem)selectOrganization.SelectedItem).Name+ "/" + ((Repository)reposGrid.SelectedItem).Name, Method.DELETE);
+            IRestResponse response = client.Execute(request);
+
+            var content = response.Content;
+
+            Console.WriteLine(content);
+            
+            if (response.IsSuccessful)
+            {
+                Delayed_repo_show();
+            }
+            else
+            {
+                MessageBox.Show("Failed to delete repo", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+
+        }
+
+        //Delayed method to get refreshed repo list
+        private async void Delayed_repo_show()
+        {
+            await Task.Delay(2000);
+            Button_Show_Repos(null, null);
         }
     }
 }

@@ -32,7 +32,7 @@ namespace GitMonitor.Objects
 
         private string clientID = "bdd7da6d9e28bbf58c58";
         private string clientSecret = "0dd8440e44b8f757d81302321529eb5bdc23047b";
-        private string[] scopesArray = { "admin:org","repo" };
+        private string[] scopesArray = { "admin:org","repo","delete_repo" };
 
         public string[] claimToken(string userName, string userPassword)
         {
@@ -63,7 +63,7 @@ namespace GitMonitor.Objects
         public int DeleteToken()
         {
             //First get id required for delete
-            client.Authenticator = new HttpBasicAuthenticator(LoginPage.userName, LoginPage.userPassword);
+            /*client.Authenticator = new HttpBasicAuthenticator(LoginPage.userName, LoginPage.userPassword);
             var request = new RestRequest("/authorizations/clients/" + clientID, Method.PUT);
             request.AddJsonBody(new { client_secret = clientSecret});
 
@@ -73,12 +73,13 @@ namespace GitMonitor.Objects
             dynamic contentObject = JsonConvert.DeserializeObject(content);
 
             Console.WriteLine(contentObject);
-            string authID = contentObject.id;
-            return 1;
-            // ERROR Only Basic authentication works, no token...
-            var requestDelete = new RestRequest("/authorizations/"+authID, Method.DELETE);
+            string authID = contentObject.id;*/
+            //return 1;
+
+            client.Authenticator = new HttpBasicAuthenticator(LoginPage.userName, LoginPage.userPassword);
+            var requestDelete = new RestRequest("/authorizations/236274095", Method.DELETE);
             IRestResponse responseDelete = client.Execute(requestDelete);
-            Console.WriteLine(responseDelete);
+            Console.WriteLine(responseDelete.IsSuccessful+responseDelete.Content);
 
             return 0;
         }

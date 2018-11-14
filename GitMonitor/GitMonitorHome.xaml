@@ -39,7 +39,7 @@
     <Grid>
         <Grid x:Name="GridBackground" Background="#55313131" Opacity="0"/>
         <Button x:Name="ButtonOpen" HorizontalAlignment="Left" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" Padding="0">
-            <materialDesign:PackIcon Kind="Menu" Foreground="#FF313131"/>
+            <materialDesign:PackIcon Kind="Menu" Foreground="#FF313131" Width="25" Height="25"/>
         </Button>
 
         <Frame x:Name="myFrame" Source="Pages/LoginPage.xaml" NavigationUIVisibility="Hidden"/>
@@ -95,7 +95,7 @@
                 </ListView>
             </StackPanel>
             <Button x:Name="ButtonClose" HorizontalAlignment="Right" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" Padding="0">
-                <materialDesign:PackIcon Kind="Close"/>
+                <materialDesign:PackIcon Kind="Close"  Width="25" Height="25"/>
             </Button>
         </Grid>
     </Grid>
