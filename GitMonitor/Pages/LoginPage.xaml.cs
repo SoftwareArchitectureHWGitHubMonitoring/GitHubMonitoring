@@ -28,7 +28,7 @@ namespace GitMonitor
 
         //TODO find better solution
         public static String userName = "";
-        public static String userPassword = "asdf";
+        public static String userPassword = "";
         public static Boolean loggedIn = false;
 
         private System.Windows.Controls.Button newBtn = new Button();
@@ -41,16 +41,11 @@ namespace GitMonitor
             {
                 resultLabel.Text = "Sikeres bejelentkezés!";
 
-                
-                newBtn.Content = "Logout";
-                newBtn.Name = "LogoutButton";
-                newBtn.Width = 50;
-                newBtn.Click += NewBtn_Click;
-                LoginPanel.Children.Add(newBtn);
+                CreateLogoutButton();
             }
         }
 
-        private void NewBtn_Click(object sender, RoutedEventArgs e)
+        private void Logout_Click(object sender, RoutedEventArgs e)
         {
             if (loggedIn)
             {
@@ -58,7 +53,10 @@ namespace GitMonitor
 
                 if (File.Exists("Token.txt"))
                 {
+                    if(TokenClaimer.Instance.DeleteToken()== 0)
+                    {
                     File.Delete("Token.txt");
+                    }
                 }
 
                 // TODO Login Button Remove
@@ -73,7 +71,15 @@ namespace GitMonitor
                 var userNameTry = emailField.Text;
                 var userPasswordTry = passwordField.Password;
 
-                string token = TokenClaimer.Instance.claimToken(userNameTry, userPasswordTry);
+                string[] data = TokenClaimer.Instance.claimToken(userNameTry, userPasswordTry);
+
+                if(data == null)
+                {
+                    //TODO Error message
+                    return;
+                }
+                string token = data[0];
+                string authorizationId = data[1];
 
                 Console.WriteLine(token);
 
@@ -84,15 +90,24 @@ namespace GitMonitor
                 {
                     CredentialStorage.addItem(userNameTry, token);
 
-                    File.WriteAllText("Token.txt", userName + ":" + userPassword);
+                    File.WriteAllText("Token.txt", userName + ":" + userPassword+ ":"+authorizationId);
 
                     resultLabel.Text = "Sikeres bejelentkezés!";
 
-                    LoginPanel.Children.Add(newBtn);
+                    CreateLogoutButton();
                 }
 
                 loggedIn = true;
             }
+        }
+
+        private void CreateLogoutButton()
+        {
+            newBtn.Content = "Logout";
+            newBtn.Name = "LogoutButton";
+            newBtn.Width = 50;
+            newBtn.Click += Logout_Click;
+            LoginPanel.Children.Add(newBtn);
         }
     }
 }

@@ -85,6 +85,7 @@
     </Compile>
     <Compile Include="Objects\CosineSimilarityCalculator.cs" />
     <Compile Include="Objects\MyComboBoxItem.cs" />
+    <Compile Include="Objects\Repository.cs" />
     <Compile Include="Objects\User.cs" />
     <Compile Include="Objects\CredentialStorage.cs" />
     <Compile Include="Objects\TokenClaimer.cs" />

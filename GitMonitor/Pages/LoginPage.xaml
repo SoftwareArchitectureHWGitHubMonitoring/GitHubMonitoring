@@ -19,7 +19,7 @@
                     TextBlock.TextAlignment="Center">
 
                     <!-- Login main content white box -->
-                    <Border 
+                    <Border
                             CornerRadius="10"
                             Padding="15 50 15 15"
                             Width="330"

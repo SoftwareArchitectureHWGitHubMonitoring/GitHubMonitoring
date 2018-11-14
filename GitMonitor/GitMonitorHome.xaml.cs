@@ -34,7 +34,7 @@ namespace GitMonitor
 
                 string[] tokenized = credentials.Split(':');
 
-                if (tokenized.Length == 2)
+                if (tokenized.Length == 3)
                 {
                     CredentialStorage.addItem(tokenized[0], tokenized[1]);
                     LoginPage.userName = tokenized[0];

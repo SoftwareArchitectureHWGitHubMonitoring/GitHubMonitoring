@@ -26,11 +26,13 @@ namespace GitMonitor
         public OrganizationsPage()
         {
             InitializeComponent();
-            
+
             //Add roles for members
-            List<MyComboBoxItem> roles = new List<MyComboBoxItem>();
-            roles.Add(new MyComboBoxItem("member"));
-            roles.Add(new MyComboBoxItem("admin"));
+            List<MyComboBoxItem> roles = new List<MyComboBoxItem>
+            {
+                new MyComboBoxItem("member"),
+                new MyComboBoxItem("admin")
+            };
             userRole.ItemsSource = roles;
             userRole.SelectedIndex = 0;
         }
@@ -104,7 +106,7 @@ namespace GitMonitor
             var contentDetails = responseDetails.Content;
             dynamic magic = JsonConvert.DeserializeObject(contentDetails);
             var state = magic.state;
-            Console.WriteLine(responseDetails.StatusCode + ";" + state);
+            Console.WriteLine(responseDetails);
         }
 
         private void Button_Delete_Member(object sender, RoutedEventArgs e)
@@ -115,13 +117,48 @@ namespace GitMonitor
             }
             var requestDetails = new RestRequest("orgs/" + ((MyComboBoxItem)selectOrganization.SelectedItem).Name + "/memberships/" + usernameField.Text, Method.DELETE);
             IRestResponse responseDetails = client.Execute(requestDetails);
-            if(responseDetails.Equals(System.Net.HttpStatusCode.NotFound))
+            if(responseDetails.StatusCode.Equals(System.Net.HttpStatusCode.NotFound))
             {
                 //TODO error message
+                MessageBox.Show("Not found user like that", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
                 //ok
+                //TODO error message
+                MessageBox.Show("Successfully deleted", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void Button_Show_Repos(object sender, RoutedEventArgs e)
+        {
+            if (selectOrganization.SelectedItem == null)
+            {
+                return;
+            }
+            var request = new RestRequest("/orgs/" + ((MyComboBoxItem)selectOrganization.SelectedItem).Name + "/repos", Method.GET);
+            IRestResponse responseDetails = client.Execute(request);
+
+            var contentDetails = responseDetails.Content;
+            dynamic magic = JsonConvert.DeserializeObject(contentDetails);
+
+            Console.WriteLine(contentDetails);
+            if (responseDetails.StatusCode.Equals(System.Net.HttpStatusCode.OK))
+            {
+                Newtonsoft.Json.Linq.JArray resultDetails = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(contentDetails);
+                List<Organization> list = new List<Organization>();
+                for (int j = 0; j < resultDetails.Count; j++)
+                {
+                    Organization o = new Organization(magic[j].id,magic[j].name,magic[j].owner.login);
+                    list.Add(o);
+                }
+                reposGrid.ItemsSource = list;
+            }
+            else
+            {
+                //ok
+                //TODO error message
+                MessageBox.Show("Failed to get or empty", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
     }
