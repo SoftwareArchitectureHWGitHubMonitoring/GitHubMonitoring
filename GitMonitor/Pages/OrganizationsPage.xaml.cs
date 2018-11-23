@@ -16,7 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace GitMonitor
+namespace GitMonitor.Pages
 {
     /// <summary>
     /// Interaction logic for OrganizationsPage.xaml
@@ -53,6 +53,12 @@ namespace GitMonitor
             IRestResponse response = client.Execute(request);
             var content = response.Content; // raw content as string
 
+            if (!response.IsSuccessful)
+            {
+                MessageBox.Show("Failed to get or no ORganizations", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
             dynamic magic = JsonConvert.DeserializeObject(content);
             Newtonsoft.Json.Linq.JArray result = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(content);
 
@@ -83,6 +89,12 @@ namespace GitMonitor
             }
             var requestDetails = new RestRequest("orgs/" + ((MyComboBoxItem)selectOrganization.SelectedItem).Name + "/members", Method.GET);
             IRestResponse responseDetails = client.Execute(requestDetails);
+
+            if (!responseDetails.IsSuccessful)
+            {
+                MessageBox.Show("Failed to get or no data", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
 
             var contentDetails = responseDetails.Content;
             dynamic magicDetails = JsonConvert.DeserializeObject(contentDetails);
@@ -116,6 +128,12 @@ namespace GitMonitor
             var requestDetails = new RestRequest("orgs/" + ((MyComboBoxItem)selectOrganization.SelectedItem).Name + "/memberships/" + usernameField.Text, Method.PUT);
             requestDetails.AddJsonBody(new { role = "admin" });
             IRestResponse responseDetails = client.Execute(requestDetails);
+            if (!responseDetails.IsSuccessful)
+            {
+                MessageBox.Show("Failed to get or no data", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
             var contentDetails = responseDetails.Content;
             dynamic magic = JsonConvert.DeserializeObject(contentDetails);
             var state = magic.state;
@@ -160,6 +178,12 @@ namespace GitMonitor
             var request = new RestRequest("/orgs/" + ((MyComboBoxItem)selectOrganization.SelectedItem).Name + "/repos", Method.GET);
             IRestResponse responseDetails = client.Execute(request);
 
+            if (!responseDetails.IsSuccessful)
+            {
+                MessageBox.Show("Failed to get or no data", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
             var contentDetails = responseDetails.Content;
             dynamic magic = JsonConvert.DeserializeObject(contentDetails);
 
@@ -193,9 +217,35 @@ namespace GitMonitor
             {
                 return;
             }
-            var request = new RestRequest("/orgs/" + ((MyComboBoxItem)selectOrganization.SelectedItem).Name + "/repos", Method.POST);
-            request.AddJsonBody(new {name= reponameField.Text});
-            IRestResponse response = client.Execute(request);
+
+
+            //Ha több userhez kell készíteni
+            if (checkBoxAllUsersSelected.IsChecked == true)
+            {
+                List<User> list = new List<User>();
+                Console.WriteLine(usersGrid.SelectedItems.Count);
+                for (int i = 0; i < usersGrid.SelectedItems.Count; i++)
+                {
+                    list.Add((User)usersGrid.SelectedItems[i]);
+                }
+
+                foreach (User u in list) {
+                    var request = new RestRequest("/orgs/" + ((MyComboBoxItem)selectOrganization.SelectedItem).Name + "/repos", Method.POST);
+                    request.AddJsonBody(new { name = (reponameField.Text + "-" + u.Name) });
+                    IRestResponse response = client.Execute(request);
+                    if (!response.IsSuccessful)
+                    {
+                        MessageBox.Show("Failed to create repo for "+ u.Name,"Alert", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+                Delayed_repo_show();
+            }
+            else
+            {
+                var request = new RestRequest("/orgs/" + ((MyComboBoxItem)selectOrganization.SelectedItem).Name + "/repos", Method.POST);
+                request.AddJsonBody(new { name = reponameField.Text });
+                IRestResponse response = client.Execute(request);
+
             var content = response.Content;
 
             if (response.IsSuccessful)
@@ -205,10 +255,12 @@ namespace GitMonitor
             }
             else
             {
-                MessageBox.Show("Failed to get or no repos", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Failed to get or no data", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
             }
         }
 
+        /// <summary>
         /// <summary>
         /// Deletes a repo belonging to the organization
         /// </summary>
@@ -234,7 +286,7 @@ namespace GitMonitor
             }
             else
             {
-                MessageBox.Show("Failed to delete repo", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Failed to delete repo like that", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
         }

@@ -72,6 +72,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\CloneAndCommit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\GitMonitorReportPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -89,6 +93,9 @@
     <Compile Include="Objects\User.cs" />
     <Compile Include="Objects\CredentialStorage.cs" />
     <Compile Include="Objects\TokenClaimer.cs" />
+    <Compile Include="Pages\CloneAndCommit.xaml.cs">
+      <DependentUpon>CloneAndCommit.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\GitMonitorReportPage.xaml.cs">
       <DependentUpon>GitMonitorReportPage.xaml</DependentUpon>
     </Compile>
