@@ -76,6 +76,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Objects\ConfigManager.cs" />
+    <Compile Include="Objects\Logout.cs" />
     <Compile Include="Services\OrganizationService.cs" />
     <Compile Include="Services\RepositoryService.cs" />
     <Page Include="GitMonitorHome.xaml">
