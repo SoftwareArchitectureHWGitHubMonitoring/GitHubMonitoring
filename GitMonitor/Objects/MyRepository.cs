@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace GitMonitor.Objects
 {
-    class Repository
+    class MyRepository
     {
         private dynamic id;
         private dynamic login;
         private dynamic owner;
 
-        public Repository(dynamic id, dynamic login, dynamic owner)
+        public MyRepository(dynamic id, dynamic login, dynamic owner)
         {
             this.id = id;
             this.login = login;

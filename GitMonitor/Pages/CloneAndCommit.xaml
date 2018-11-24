@@ -24,6 +24,19 @@
                             Margin="10 10 10 10">
 
                     <StackPanel>
+                        <Label Height="30" Width="400" Foreground="DeepSkyBlue" HorizontalAlignment="Center" HorizontalContentAlignment="Center" FontWeight="Bold" FontSize="16"  Content="Choose an Organization to manipulate:"/>
+
+                        <ComboBox Name="selectOrganization" Margin="10 10 10 10" Width="150">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <!--<Rectangle Fill="{Binding Name}" Width="16" Height="16" Margin="0,2,5,2" />-->
+                                        <TextBlock Text="{Binding Name}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+
                         <Button Click="Button_Clone_Repos" Content="Clone repos" HorizontalAlignment="Center" Margin="10 10 10 10" />
                     </StackPanel>
                      

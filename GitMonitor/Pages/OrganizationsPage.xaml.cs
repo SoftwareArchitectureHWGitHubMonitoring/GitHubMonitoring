@@ -1,4 +1,5 @@
 ﻿using GitMonitor.Objects;
+using GitMonitor.Services;
 using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Authenticators;
@@ -47,20 +48,15 @@ namespace GitMonitor.Pages
         /// <param name="e"></param>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var request = new RestRequest("/user/orgs", Method.GET);
-
-            // execute the request
-            IRestResponse response = client.Execute(request);
-            var content = response.Content; // raw content as string
-
+            IRestResponse response = OrganizationService.getOrganizations();
             if (!response.IsSuccessful)
             {
-                MessageBox.Show("Failed to get or no ORganizations", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Failed to get or no data", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
-
+            var content = response.Content;
             dynamic magic = JsonConvert.DeserializeObject(content);
-            Newtonsoft.Json.Linq.JArray result = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(content);
+            Newtonsoft.Json.Linq.JArray result = (Newtonsoft.Json.Linq.JArray)magic;
 
             List<Organization> list = new List<Organization>();
             List<MyComboBoxItem> orgList = new List<MyComboBoxItem>();
@@ -175,34 +171,10 @@ namespace GitMonitor.Pages
             {
                 return;
             }
-            var request = new RestRequest("/orgs/" + ((MyComboBoxItem)selectOrganization.SelectedItem).Name + "/repos", Method.GET);
-            IRestResponse responseDetails = client.Execute(request);
-
-            if (!responseDetails.IsSuccessful)
+            List<MyRepository> list = RepositoryService.GetRepositories(((MyComboBoxItem)selectOrganization.SelectedItem).Name);
+            if(list != null)
             {
-                MessageBox.Show("Failed to get or no data", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
-            }
-
-            var contentDetails = responseDetails.Content;
-            dynamic magic = JsonConvert.DeserializeObject(contentDetails);
-
-            Console.WriteLine(contentDetails);
-            if (responseDetails.StatusCode.Equals(System.Net.HttpStatusCode.OK))
-            {
-                Newtonsoft.Json.Linq.JArray resultDetails = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(contentDetails);
-                List<Repository> list = new List<Repository>();
-                for (int j = 0; j < resultDetails.Count; j++)
-                {
-                    Repository o = new Repository(magic[j].id,magic[j].name,magic[j].owner.login);
-                    Console.WriteLine(magic[j].name);
-                    list.Add(o);
-                }
                 reposGrid.ItemsSource = list;
-            }
-            else
-            {
-                MessageBox.Show("Failed to get or no repos", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
@@ -273,7 +245,7 @@ namespace GitMonitor.Pages
                 return;
             }
 
-            var request = new RestRequest("/repos/" + ((MyComboBoxItem)selectOrganization.SelectedItem).Name+ "/" + ((Repository)reposGrid.SelectedItem).Name, Method.DELETE);
+            var request = new RestRequest("/repos/" + ((MyComboBoxItem)selectOrganization.SelectedItem).Name+ "/" + ((MyRepository)reposGrid.SelectedItem).Name, Method.DELETE);
             IRestResponse response = client.Execute(request);
 
             var content = response.Content;

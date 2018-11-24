@@ -1,4 +1,5 @@
 ﻿using GitMonitor.Objects;
+using GitMonitor.Pages;
 using RestSharp;
 using RestSharp.Authenticators;
 using System;
@@ -7,6 +8,7 @@ using System.IO;
 using System.Net.Http;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 
 namespace GitMonitor
 {
@@ -53,6 +55,12 @@ namespace GitMonitor
             if (item != null && item.IsSelected)
             {
                 Page next;
+
+                //Trigger event to close side menu
+                ListViewItem btn = sender as ListViewItem;
+                Storyboard myStoryboard = btn.TryFindResource("CloseMenu") as Storyboard;
+                myStoryboard.Begin(btn);
+
                 switch (item.Name)
                 {
                     case "loginNavigation":
@@ -61,6 +69,10 @@ namespace GitMonitor
                         break;
                     case "organizationsNavigation":
                         next = new OrganizationsPage();
+                        myFrame.Navigate(next);
+                        break;
+                    case "cloningNavigation":
+                        next = new CloneAndCommit();
                         myFrame.Navigate(next);
                         break;
                 }

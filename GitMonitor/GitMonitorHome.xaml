@@ -68,10 +68,10 @@
                             <TextBlock Text="Organizations" Margin="10"/>
                         </StackPanel>
                     </ListViewItem>
-                    <ListViewItem Height="45" Padding="0">
+                    <ListViewItem  x:Name="cloningNavigation" Height="45" Padding="0" PreviewMouseLeftButtonUp="ListViewItem_PreviewMouseLeftButtonUp">
                         <StackPanel Orientation="Horizontal" Margin="10 0">
-                            <materialDesign:PackIcon Kind="Lightbulb" Width="20" Height="20" Foreground="Green" Margin="5" VerticalAlignment="Center"/>
-                            <TextBlock Text="Send Feedback" Margin="10"/>
+                            <materialDesign:PackIcon Kind="ContentCopy" Width="20" Height="20" Foreground="Green" Margin="5" VerticalAlignment="Center"/>
+                            <TextBlock Text="Cloning" Margin="10"/>
                         </StackPanel>
                     </ListViewItem>
                     <ListViewItem Height="45" Padding="0">
