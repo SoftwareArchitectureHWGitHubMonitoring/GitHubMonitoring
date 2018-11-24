@@ -35,11 +35,17 @@ namespace GitMonitor
 
         public LoginPage()
         {
+            CreateUI();
+        }
+
+        private void CreateUI()
+        {
             InitializeComponent();
+
 
             if (loggedIn)
             {
-                resultLabel.Text = "Sikeres bejelentkezés!";
+                resultLabel.Text = "Successfully logged in!";
 
                 CreateLogoutButton();
             }
@@ -51,16 +57,16 @@ namespace GitMonitor
             {
                 loggedIn = false;
 
+                Logout.DeleteToken();
+
                 if (File.Exists("Token.txt"))
                 {
-                    if(TokenClaimer.Instance.DeleteToken()== 0)
-                    {
                     File.Delete("Token.txt");
-                    }
                 }
 
-                // TODO Login Button Remove
-                //LoginPanel.Children.Remove((UIElement)this.FindName("LogoutButton"));
+                LoginPanel.Children.Clear();
+
+                CreateUI();
             }
         }
 
@@ -81,8 +87,6 @@ namespace GitMonitor
                 string token = data[0];
                 string authorizationId = data[1];
 
-                Console.WriteLine(token);
-
                 userName = userNameTry;
                 userPassword = token;
 
@@ -92,7 +96,7 @@ namespace GitMonitor
 
                     File.WriteAllText("Token.txt", userName + ":" + userPassword+ ":"+authorizationId);
 
-                    resultLabel.Text = "Sikeres bejelentkezés!";
+                    resultLabel.Text = "Successfully logged in!";
 
                     CreateLogoutButton();
                 }
