@@ -38,19 +38,37 @@ namespace GitMonitor
 
                 if (tokenized.Length == 3)
                 {
-                    CredentialStorage.addItem(tokenized[0], tokenized[1]);
                     LoginPage.userName = tokenized[0];
                     LoginPage.userPassword = tokenized[1];
                     LoginPage.loggedIn = true;
 
                 }
+            }
 
-
+            //Load config file and configs
+            if (File.Exists("../../config.txt"))
+            {
+                System.Collections.Generic.IEnumerable<String> lines = File.ReadLines("../../config.txt");
+                foreach (String item in lines)
+                {
+                    string[] words = item.Split('=');
+                    ConfigManager.addItem(words[0],words[1]);
+                }
+            }
+            else
+            {
+                MessageBoxResult result = MessageBox.Show("Missing config file!", "ErRrOR", MessageBoxButton.OK);
+                switch (result)
+                {
+                    case MessageBoxResult.OK:
+                        System.Windows.Application.Current.Shutdown();
+                        break;
+                }
             }
         }
 
-        private void ListViewItem_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
+            private void ListViewItem_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+            {
             var item = sender as ListViewItem;
             if (item != null && item.IsSelected)
             {

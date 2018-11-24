@@ -1,0 +1,2 @@
+cloneDirectory=C:\Work\BME\Clones\
+showDir=true

@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -32,6 +33,8 @@ namespace GitMonitor.Pages
             InitializeComboBox();
         }
 
+        static String directory = ConfigManager.get("cloneDirectory");
+
         private void Button_Clone_Repos(object sender, RoutedEventArgs e)
         {
             if (selectOrganization.SelectedItem == null)
@@ -45,8 +48,11 @@ namespace GitMonitor.Pages
             {
                 RepositoryService.cloneOneRepo(orgname,repo.Name);
             }
-            Process.Start("explorer.exe", "-p G:\\Work\\Clones\\");
 
+            if (ConfigManager.get("showDir").Equals("true"))
+            {
+                Process.Start("explorer.exe", "/open, "+directory);
+            }
         }
 
         public void InitializeComboBox()
@@ -60,16 +66,36 @@ namespace GitMonitor.Pages
             var content = response.Content;
             dynamic magic = JsonConvert.DeserializeObject(content);
             Newtonsoft.Json.Linq.JArray result = (Newtonsoft.Json.Linq.JArray)magic;
-            //List<Organization> list = new List<Organization>();
             List<MyComboBoxItem> orgList = new List<MyComboBoxItem>();
             for (int i = 0; i < result.Count; i++)
             {
                 Organization o = new Organization(magic[i].id, magic[i].login, magic[i].description);
-                //list.Add(o);
                 orgList.Add(new MyComboBoxItem((String)magic[i].login));
             }
             selectOrganization.ItemsSource = orgList;
             selectOrganization.SelectedIndex = 0;
+        }
+
+        private void Button_Select(object sender, RoutedEventArgs e)
+        {
+            selectFiles();
+        }
+
+        public void selectFiles()
+        {
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            dlg.Multiselect = true;
+
+            // Display OpenFileDialog by calling ShowDialog method 
+            Nullable<bool> result = dlg.ShowDialog();
+
+            // Get the selected file name and display in a TextBox 
+            if (result == true)
+            {
+                // Open document 
+                string filename = dlg.FileName;
+                Console.WriteLine(filename);
+            }
         }
     }
 }

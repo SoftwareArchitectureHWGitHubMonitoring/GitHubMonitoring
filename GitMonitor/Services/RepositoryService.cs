@@ -5,6 +5,7 @@ using RestSharp;
 using RestSharp.Authenticators;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -17,17 +18,15 @@ namespace GitMonitor.Services
     class RepositoryService
     {
         static RestClient client = new RestClient("https://api.github.com/");
+        static String directory = ConfigManager.get("cloneDirectory");
 
         public RepositoryService()
         {
-            //client.Authenticator = new HttpBasicAuthenticator(LoginPage.userName, LoginPage.userPassword);
+           
         }
 
         public static void cloneOneRepo(String orgname, String reponame)
         {
-            /*var requestDetails = new RestRequest("orgs/" + name + "/memberships/" , Method.PUT);
-            requestDetails.AddJsonBody(new { role = "admin" });
-            IRestResponse responseDetails = client.Execute(requestDetails);*/
 
             //deleteRepoFromDrive(reponame);
 
@@ -36,12 +35,11 @@ namespace GitMonitor.Services
 
             try
             {
-                Repository.Clone("https://github.com/" + orgname + "/" + reponame + ".git", "G:\\Work\\Clones\\" + reponame);
+                Repository.Clone("https://github.com/" + orgname + "/" + reponame + ".git", directory + reponame);
             }  catch(Exception e)
             {
                 MessageBox.Show("Error during cloning, message: "+e.Message, "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
             }
-            //MessageBox.Show("Successful cloning", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private static void deleteRepoFromDrive(String reponame)

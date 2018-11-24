@@ -88,7 +88,6 @@ namespace GitMonitor
 
                 if (!userName.Equals("") || token != null)
                 {
-                    CredentialStorage.addItem(userNameTry, token);
 
                     File.WriteAllText("Token.txt", userName + ":" + userPassword+ ":"+authorizationId);
 

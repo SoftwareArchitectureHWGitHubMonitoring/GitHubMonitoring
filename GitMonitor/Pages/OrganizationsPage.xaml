@@ -36,7 +36,7 @@
 
                         <Label Height="30" Width="400" Foreground="DeepSkyBlue" HorizontalAlignment="Center" HorizontalContentAlignment="Center" FontWeight="Bold" FontSize="16"  Content="Choose an Organization to manipulate:"/>
 
-                        <ComboBox Name="selectOrganization" Margin="10 10 10 10" Width="150">
+                        <ComboBox Name="selectOrganization" Margin="10 10 10 10" Width="250">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
@@ -94,7 +94,7 @@
                             <TextBox x:Name="reponameField" Tag="Reponame" Width="100" Margin="10 10 10 10"/>
                         <Button Click="Button_Create_Repos" Content="Create Repository" HorizontalAlignment="Center" Margin="10 10 10 10" />
                             <CheckBox Name="checkBoxAllUsersSelected" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            <Label Height="30" Width="Auto" Foreground="SkyBlue" HorizontalContentAlignment="Center" FontWeight="Light" FontSize="11" VerticalContentAlignment="Center"  Content="Az táblázatban kijelölt felhasználókhoz létrehozza a repot, hozzáfűzve a felhasználónevet."/>
+                            <Label Height="30" Width="Auto" Foreground="SkyBlue" HorizontalContentAlignment="Center" FontWeight="Light" FontSize="11" VerticalContentAlignment="Center"  Content="Create for all users, template: $reponame-$username"/>
                         </StackPanel>
 
                         <ScrollViewer Margin="10,10,10,0" Height="Auto" VerticalScrollBarVisibility="Auto"  >
